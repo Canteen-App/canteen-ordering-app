@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, ImageBackground, TouchableOpacity } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
+import { router } from "expo-router";
 
 const ViewCategoryItem = ({ item }: any) => {
   const [like, setLike] = useState(false);
@@ -36,7 +37,10 @@ const ViewCategoryItem = ({ item }: any) => {
             )}
           </Text>
         </View>
-        <TouchableOpacity className="flex-grow flex justify-end">
+        <TouchableOpacity
+          onPress={() => router.push(`/(authenticated)/item/${item.id}`)}
+          className="flex-grow flex justify-end"
+        >
           <View className="p-2">
             <Text className="text-2xl text-white font-bold">{item.name}</Text>
             <Text className="text-white font-black text-xl">

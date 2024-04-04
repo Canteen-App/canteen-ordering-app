@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { router, useLocalSearchParams } from "expo-router";
 import ViewDailyMealItem from "@/components/Menu/DailyMeals/ViewDailyMealItem";
 import { FontAwesome } from "@expo/vector-icons";
+import TopBar from "@/components/TopBar";
 
 export default function ViewDailyMeal() {
   const { dailyMealId } = useLocalSearchParams<{ dailyMealId: string }>();

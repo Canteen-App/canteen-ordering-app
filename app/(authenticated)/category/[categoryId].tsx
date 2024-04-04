@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { router, useLocalSearchParams } from "expo-router";
 import ViewCategoryItem from "@/components/Menu/Categories/ViewCategoryItem";
 import { FontAwesome } from "@expo/vector-icons";
+import TopBar from "@/components/TopBar";
 
 export default function ViewCategory() {
   const { categoryId } = useLocalSearchParams<{ categoryId: string }>();
@@ -46,10 +47,12 @@ export default function ViewCategory() {
           </Text>
         </View>
 
-        {category.items &&
-          category.items.map((item: any, index: number) => (
-            <ViewCategoryItem key={index} item={item} />
-          ))}
+        <View className="flex flex-row flex-wrap">
+          {category.items &&
+            category.items.map((item: any, index: number) => (
+              <ViewCategoryItem key={index} item={item} />
+            ))}
+        </View>
       </View>
     );
   }
