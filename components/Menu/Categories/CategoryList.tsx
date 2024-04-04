@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { Text, View } from "react-native";
 import CategoryCard from "./CategoryCard";
+import { getCategories } from "../../../services/category";
 
 const CategoryList = () => {
   const [categories, setCategories] = useState<any[]>([]);
 
   useEffect(() => {
-    fetch(`${process.env.EXPO_PUBLIC_API_URL}/category/NORMAL_CATEGORY`)
-      .then((res) => res.json())
-      .then((result) => {
-        setCategories(result);
-      })
-      .catch((error) => console.log(error));
+    const getData = async () => {
+      const fetched_categories = await getCategories();
+      setCategories(fetched_categories);
+    };
+
+    getData();
   }, []);
   return (
     <View className="">

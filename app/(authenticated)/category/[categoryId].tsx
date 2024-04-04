@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { router, useLocalSearchParams } from "expo-router";
 import ViewCategoryItem from "@/components/Menu/Categories/ViewCategoryItem";
 import { FontAwesome } from "@expo/vector-icons";
-import TopBar from "@/components/TopBar";
+import { getCategoryDetails } from "@/services/category";
 
 export default function ViewCategory() {
   const { categoryId } = useLocalSearchParams<{ categoryId: string }>();
@@ -12,15 +12,10 @@ export default function ViewCategory() {
 
   useEffect(() => {
     const getData = async () => {
-      console.log(categoryId);
       if (categoryId) {
-        fetch(`${process.env.EXPO_PUBLIC_API_URL}/category/id/${categoryId}`)
-          .then((res) => res.json())
-          .then((result) => {
-            setCategory(result);
-            setLoading(false);
-          })
-          .catch((error) => console.log(error));
+        const fetched_category = await getCategoryDetails(categoryId);
+        setCategory(fetched_category);
+        setLoading(false);
       }
     };
 

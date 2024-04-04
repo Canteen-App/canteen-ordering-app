@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { router, useLocalSearchParams } from "expo-router";
 import ViewDailyMealItem from "@/components/Menu/DailyMeals/ViewDailyMealItem";
 import { FontAwesome } from "@expo/vector-icons";
-import TopBar from "@/components/TopBar";
+import { getCategoryDetails } from "@/services/category";
 
 export default function ViewDailyMeal() {
   const { dailyMealId } = useLocalSearchParams<{ dailyMealId: string }>();
@@ -12,15 +12,10 @@ export default function ViewDailyMeal() {
 
   useEffect(() => {
     const getData = async () => {
-      console.log(dailyMealId);
       if (dailyMealId) {
-        fetch(`${process.env.EXPO_PUBLIC_API_URL}/category/id/${dailyMealId}`)
-          .then((res) => res.json())
-          .then((result) => {
-            setCategory(result);
-            setLoading(false);
-          })
-          .catch((error) => console.log(error));
+        const fetched_dailyMeal = await getCategoryDetails(dailyMealId);
+        setCategory(fetched_dailyMeal);
+        setLoading(false);
       }
     };
 

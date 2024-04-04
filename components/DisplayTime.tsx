@@ -1,5 +1,7 @@
-import { View, Text } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import React, { useEffect, useState } from "react";
+import { AntDesign, FontAwesome } from "@expo/vector-icons";
+import { router } from "expo-router";
 
 const DisplayTime = () => {
   const [currentDate, setCurrentDate] = useState("");
@@ -57,10 +59,19 @@ const DisplayTime = () => {
     updateDateTime();
   }, []);
   return (
-    <View className="pb-2 rounded-b-2xl px-4 bg-brown-light">
-      <Text className="text-lg text-brown-dark">{currentDate}</Text>
-      <Text className="text-3xl font-black text-brown-dark">{currentDay}</Text>
-      <Text className="text-lg text-brown-dark">{currentTime}</Text>
+    <View className="pb-2 flex flex-row justify-between items-end rounded-b-2xl px-4 bg-brown-light">
+      <View>
+        <Text className="text-lg text-brown-dark">{currentDate}</Text>
+        <Text className="text-3xl font-black text-brown-dark">
+          {currentDay}
+        </Text>
+        <Text className="text-lg text-brown-dark">{currentTime}</Text>
+      </View>
+      <View className="p-1">
+        <TouchableOpacity onPress={() => router.push("/cart")}>
+          <FontAwesome name="shopping-cart" size={35} color="#744E15" />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };

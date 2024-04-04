@@ -3,25 +3,23 @@ import React, { useEffect, useState } from "react";
 import { router, useLocalSearchParams } from "expo-router";
 import { AntDesign, FontAwesome } from "@expo/vector-icons";
 import { Image } from "expo-image";
+import { getItemDetails } from "@/services/category";
+import { addItemToCart, getCartItems } from "@/services/cart";
 
 const ViewItem = () => {
   const { itemId } = useLocalSearchParams<{ itemId: string }>();
   const [item, setItem] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [like, setLike] = useState(false);
-  const [count, setCount] = useState(0);
+  const [count, setCount] = useState(1);
 
   useEffect(() => {
     const getData = async () => {
       console.log(itemId);
       if (itemId) {
-        fetch(`${process.env.EXPO_PUBLIC_API_URL}/item/${itemId}`)
-          .then((res) => res.json())
-          .then((result) => {
-            setItem(result);
-            setLoading(false);
-          })
-          .catch((error) => console.log(error));
+        const fetched_item = await getItemDetails(itemId);
+        setItem(fetched_item);
+        setLoading(false);
       }
     };
 
@@ -29,10 +27,18 @@ const ViewItem = () => {
   }, [itemId]);
 
   const minusCount = () => {
-    if (count <= 0) {
+    if (count <= 1) {
       return;
     } else {
       setCount(count - 1);
+    }
+  };
+
+  const addCount = () => {
+    if (count >= 100) {
+      return;
+    } else {
+      setCount(count + 1);
     }
   };
 
@@ -78,6 +84,15 @@ const ViewItem = () => {
         </View>
         <Text className="mt-2 text-base">{item?.description}</Text>
       </View>
+      <TouchableOpacity
+        onPress={() => getCartItems()}
+        className="flex flex-row items-center rounded-xl p-4 bg-yellow"
+      >
+        <FontAwesome size={30} name="shopping-cart" color="#744E15" />
+        <Text className="font-black text-brown-dark text-xl pl-4">
+          View Cart
+        </Text>
+      </TouchableOpacity>
       <View className="w-full flex flex-row justify-between bg-brown-light p-5 rounded-t-2xl">
         <View className="flex items-center flex-row">
           <TouchableOpacity
@@ -90,13 +105,16 @@ const ViewItem = () => {
             {count}
           </Text>
           <TouchableOpacity
-            onPress={() => setCount(count + 1)}
+            onPress={addCount}
             className="p-2 flex justify-center items-center rounded-full bg-brown-dark text-yellow w-[40px] h-[40px]"
           >
             <AntDesign color="#FFB906" size={24} name="plus" />
           </TouchableOpacity>
         </View>
-        <TouchableOpacity className="flex flex-row items-center rounded-xl p-4 bg-yellow">
+        <TouchableOpacity
+          onPress={() => addItemToCart(itemId, count)}
+          className="flex flex-row items-center rounded-xl p-4 bg-yellow"
+        >
           <FontAwesome size={30} name="shopping-cart" color="#744E15" />
           <Text className="font-black text-brown-dark text-xl pl-4">
             Add To Cart

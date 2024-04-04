@@ -1,21 +1,24 @@
 import React, { useEffect, useState } from "react";
 import { ScrollView, Text, View } from "react-native";
 import DailyMealCard from "./DailyMealCard";
+import { getDailyMeals } from "@/services/category";
 
 const DailyMealList = () => {
   const [dailyMeals, setDailyMeals] = useState<any[]>([]);
 
   useEffect(() => {
-    fetch(`${process.env.EXPO_PUBLIC_API_URL}/category/DAILY_MEAL`)
-      .then((res) => res.json())
-      .then((result) => {
-        setDailyMeals(result);
-      })
-      .catch((error) => console.log(error));
+    const getData = async () => {
+      const fetched_categories = await getDailyMeals();
+      setDailyMeals(fetched_categories);
+    };
+
+    getData();
   }, []);
   return (
     <View className="">
-      <Text className="font-bold text-2xl px-2 text-brown-dark">Daily Meals</Text>
+      <Text className="font-bold text-2xl px-2 text-brown-dark">
+        Daily Meals
+      </Text>
       <ScrollView horizontal>
         {dailyMeals &&
           dailyMeals.map((dailyMeal, index) => (
