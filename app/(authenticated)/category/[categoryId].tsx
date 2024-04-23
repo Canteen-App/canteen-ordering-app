@@ -34,7 +34,7 @@ export default function ViewCategory() {
     return (
       <View>
         <View className="flex flex-row items-center p-2">
-          <TouchableOpacity onPress={() => router.back()}>
+          <TouchableOpacity onPress={() => router.push("/(authenticated)")}>
             <FontAwesome name="chevron-left" size={30} color="#744E15" />
           </TouchableOpacity>
           <Text className="text-3xl font-black text-brown-dark p-2">

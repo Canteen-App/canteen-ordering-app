@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import DailyMealList from "@/components/Menu/DailyMeals/DailyMealList";
 import CategoryList from "@/components/Menu/Categories/CategoryList";
 import { FontAwesome } from "@expo/vector-icons";
-import TopBar from "@/components/TopBar";
 import DisplayTime from "@/components/DisplayTime";
 
 export default function Home() {

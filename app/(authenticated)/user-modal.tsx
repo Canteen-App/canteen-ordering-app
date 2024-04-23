@@ -4,6 +4,7 @@ import { auth } from "@/firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { FontAwesome } from "@expo/vector-icons";
 import { router } from "expo-router";
+import { getCustomerAccount } from "@/services/customer";
 
 const UserModal = () => {
   const [user, setUser] = useState<any>();
@@ -11,7 +12,8 @@ const UserModal = () => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user: any) => {
       if (user) {
-        setUser(user);
+        const customer = await getCustomerAccount(user.uid);
+        setUser({ ...customer, ...user });
       } else {
         setUser(null);
       }
@@ -38,6 +40,9 @@ const UserModal = () => {
       <View className="flex-grow flex-1 justify-center items-center">
         <Text className="text-2xl font-bold text-center mt-4">
           User Profile
+        </Text>
+        <Text className="text-4xl font-black text-center text-brown-dark">
+          {user?.name}
         </Text>
         <Text className="text-4xl font-black text-center text-brown-dark">
           {user?.email}

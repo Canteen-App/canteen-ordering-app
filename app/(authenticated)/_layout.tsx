@@ -3,7 +3,9 @@ import React, { useEffect, useState } from "react";
 import { Redirect, Stack } from "expo-router";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "@/firebase";
-import TopBar from "@/components/TopBar";
+import TabBar from "@/components/TabBar";
+import { CartProvider } from "@/services/cart";
+import { getCustomerAccount } from "@/services/customer";
 
 const Layout = () => {
   const [user, setUser] = useState<any>();
@@ -14,9 +16,8 @@ const Layout = () => {
       if (user) {
         setUser(user);
         setLoading(false);
-        console.log(user)
       } else {
-        console.log("Logged Out")
+        console.log("Logged Out");
         setUser(null);
         setLoading(false);
       }
@@ -35,17 +36,15 @@ const Layout = () => {
 
   if (!loading && user) {
     return (
-      <>
-        <TopBar />
+      <CartProvider>
         <Stack
           screenOptions={{
             statusBarColor: "#FFE9B1",
             headerShown: false,
           }}
-        >
-          <Stack.Screen name="user-modal" options={{ presentation: "modal" }} />
-        </Stack>
-      </>
+        />
+        <TabBar />
+      </CartProvider>
     );
   }
 
