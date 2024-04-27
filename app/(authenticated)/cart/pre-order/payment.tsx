@@ -4,7 +4,12 @@ import { useLocalSearchParams } from "expo-router";
 import { getCartItems } from "@/services/cart";
 import { router } from "expo-router";
 import { FontAwesome } from "@expo/vector-icons";
-import { StripeProvider } from "@stripe/stripe-react-native";
+import {
+  StripeProvider,
+  initPaymentSheet,
+  useStripe,
+} from "@stripe/stripe-react-native";
+import { createPaymentIntent } from "@/services/order";
 
 const PreOrderPayment = () => {
   const { date } = useLocalSearchParams();
@@ -13,6 +18,8 @@ const PreOrderPayment = () => {
     { item: any; quantity: number }[] | null | undefined
   >(null);
   const [totalAmount, setTotalAmount] = useState(0);
+
+  const { initPaymentSheet, presentPaymentSheet } = useStripe();
 
   useEffect(() => {
     const getData = async () => {
@@ -30,6 +37,18 @@ const PreOrderPayment = () => {
 
     getData();
   }, []);
+
+  const makePayment = async () => {
+    console.log("Processing Payment...");
+    const paymentIntentResponse = await createPaymentIntent(totalAmount);
+
+    await initPaymentSheet({
+      merchantDisplayName: "Canteen Pvt Ltd",
+      paymentIntentClientSecret: paymentIntentResponse.paymentIntent,
+    });
+
+    await presentPaymentSheet()
+  };
 
   return (
     <StripeProvider publishableKey={process.env.EXPO_PUBLIC_STRIPE_KEY ?? ""}>
@@ -96,7 +115,10 @@ const PreOrderPayment = () => {
               Rs {totalAmount.toLocaleString()}
             </Text>
           </View>
-          <TouchableOpacity className="bg-yellow py-3 rounded-lg">
+          <TouchableOpacity
+            onPress={makePayment}
+            className="bg-yellow py-3 rounded-lg"
+          >
             <Text className="text-black font-black text-center text-2xl">
               Payment
             </Text>
