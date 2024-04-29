@@ -13,6 +13,7 @@ import {
 } from "react-native-gesture-handler";
 import { router } from "expo-router";
 import { useCart } from "@/services/cart";
+import { ImageBackground } from "expo-image";
 
 const CartItem = ({ rowRefs, cartItem, items, setItems }: any) => {
   const { addItemToCart, deleteCartItem } = useCart();
@@ -102,39 +103,12 @@ const CartItem = ({ rowRefs, cartItem, items, setItems }: any) => {
     );
   };
 
-  const renderLeftActions = (
-    progress: Animated.AnimatedInterpolation<string | number>,
-    dragAnimatedValue: Animated.AnimatedInterpolation<string | number>
-  ) => {
-    const opacity = dragAnimatedValue.interpolate({
-      inputRange: [0, 100],
-      outputRange: [0, 1],
-      extrapolate: "clamp",
-    });
-    return (
-      <Animated.View
-        className="px-5 h-full w-1/4 flex justify-center"
-        style={[styles.deleteButton, { opacity }]}
-      >
-        <TouchableOpacity
-          onPress={deleteItem}
-          className="p-2 bg-white rounded-lg"
-          style={styles.deleteButton}
-        >
-          <Text>
-            <FontAwesome name="trash" size={35} color="red" />
-          </Text>
-        </TouchableOpacity>
-      </Animated.View>
-    );
-  };
-
   if (cartItem == null) {
     return <></>;
   }
 
   return (
-    <GestureHandlerRootView>
+    <GestureHandlerRootView className="mb-2">
       <Swipeable
         ref={(ref) => {
           if (ref && !rowRefs.get(cartItem.item.id)) {
@@ -147,23 +121,35 @@ const CartItem = ({ rowRefs, cartItem, items, setItems }: any) => {
           });
         }}
         renderRightActions={renderRightActions}
-        renderLeftActions={renderLeftActions}
       >
-        <View className="flex mb-5 flex-row w-full justify-between">
+        <View className="flex flex-row w-full py-1 gap-2 px-2 bg-brown-light">
           <TouchableOpacity
+            className="flex-grow"
             onPress={() =>
               router.replace(`/(authenticated)/item/${cartItem.item.id}`)
             }
           >
-            <Text className="text-base w-[200px] font-light text-brown-dark">
-              {cartItem.item.category.name}
-            </Text>
-            <Text className="text-2xl w-[200px] font-bold text-brown-dark">
-              {cartItem.item.name}
-            </Text>
-            <Text className="text-xl font-light text-brown-dark">
-              Rs {cartItem.item.price}
-            </Text>
+            <ImageBackground
+              className="rounded-xl overflow-hidden flex-grow"
+              source={{ uri: cartItem.item.imageURL }}
+            >
+              <View className="w-full absolute h-full bg-brown-dark opacity-75" />
+              <View className="px-2">
+                <Text className="text-base w-[200px] text-white">
+                  {cartItem.item.category.name}
+                </Text>
+                <Text
+                  ellipsizeMode="tail"
+                  numberOfLines={2}
+                  className="text-xl w-[200px] truncate font-bold text-white"
+                >
+                  {cartItem.item.name}
+                </Text>
+                <Text className="text-xl font-light text-white">
+                  Rs {cartItem.item.price}
+                </Text>
+              </View>
+            </ImageBackground>
           </TouchableOpacity>
           <View>
             <View className="flex items-center flex-row">

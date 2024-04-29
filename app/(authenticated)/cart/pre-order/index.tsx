@@ -92,9 +92,9 @@ const PreOrder = () => {
         <FontAwesome name="clock-o" size={35} color="#744E15" />
         <Text className="text-3xl font-black text-brown-dark">Pre Order</Text>
       </View>
-      <View className="p-2 flex-grow">
+      <View className="p-1 flex-grow">
         <View className="h-[250px] flex-grow">
-          <ScrollView className="bg-brown-light px-4 py-2 rounded-2xl overflow-hidden">
+          <ScrollView className="bg-brown-light px-1 py-2 rounded-2xl overflow-hidden">
             {items &&
               items.map((cartItem, index) => (
                 <View key={index}>

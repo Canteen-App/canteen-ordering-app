@@ -1,6 +1,6 @@
 import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import React, { useEffect, useState } from "react";
-import { FontAwesome } from "@expo/vector-icons";
+import { AntDesign, FontAwesome } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { getCartItems, useCart } from "@/services/cart";
 import CartItem from "@/components/Cart/CartItem";
@@ -56,7 +56,7 @@ const Cart = () => {
         <TouchableOpacity onPress={() => router.dismiss()}>
           <FontAwesome name="chevron-left" size={30} color="#744E15" />
         </TouchableOpacity>
-        <FontAwesome name="shopping-cart" size={35} color="#744E15" />
+        <AntDesign name="shoppingcart" size={35} color="#744E15" />
         <Text className="text-3xl font-black text-brown-dark">Cart</Text>
         <View className="flex-grow" />
         <TouchableOpacity
@@ -66,8 +66,8 @@ const Cart = () => {
           <Text className="text-2xl font-black text-white">Clear Cart</Text>
         </TouchableOpacity>
       </View>
-      <View className="p-4 flex-grow">
-        <ScrollView className="bg-brown-light h-[200px] px-4 py-2 rounded-lg">
+      <View className="p-2 flex-grow">
+        <ScrollView className="bg-brown-light h-[200px] px-1 py-2 rounded-lg">
           {items &&
             items.map((cartItem, index) => (
               <View key={index}>

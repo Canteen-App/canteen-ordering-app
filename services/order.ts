@@ -6,3 +6,37 @@ export const createPaymentIntent = async (amount: number) => {
   });
   return response.data;
 };
+
+export const orderCheckout = async (
+  itemList: {
+    itemId: any;
+    quantity: number;
+  }[],
+  totalAmount: number
+) => {
+  const response = await fetchAPI.post("/order/checkout", {
+    orderList: itemList,
+    currentUserDiplayedAmount: totalAmount,
+  });
+  return response.data;
+};
+
+export const getToPayOrders = async () => {
+  const response = await fetchAPI.get("/order/to-pay");
+  return response.data;
+};
+
+export const getToRecieveOrders = async () => {
+  const response = await fetchAPI.get("/order/to-recieve");
+  return response.data;
+};
+
+export const checkPaymentMade = async (orderId: string) => {
+  const response = await fetchAPI.get(`/order/check-payment/${orderId}`);
+  return response.data;
+};
+
+export const getOrderDetails = async (orderId: string) => {
+  const response = await fetchAPI.get(`/order/${orderId}`);
+  return response.data;
+};

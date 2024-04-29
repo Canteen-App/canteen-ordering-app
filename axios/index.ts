@@ -1,4 +1,6 @@
 import axios from "axios";
+import { auth } from "@/firebase";
+import { onAuthStateChanged } from "firebase/auth";
 
 const fetchAPI = axios.create({
   baseURL: process.env.EXPO_PUBLIC_API_URL,
@@ -6,8 +8,10 @@ const fetchAPI = axios.create({
 
 // Request interceptor
 fetchAPI.interceptors.request.use(
-  (config: any) => {
+  async (config: any) => {
     config.headers["Content-Type"] = "application/json";
+    const accessToken = await auth?.currentUser?.getIdToken(true)
+    config.headers["Authorization"] = `Bearer ${accessToken}`;
     return config;
   },
   (error: any) => {

@@ -6,6 +6,7 @@ import { auth } from "@/firebase";
 import TabBar from "@/components/TabBar";
 import { CartProvider } from "@/services/cart";
 import { getCustomerAccount } from "@/services/customer";
+import { StripeProvider } from "@stripe/stripe-react-native";
 
 const Layout = () => {
   const [user, setUser] = useState<any>();
@@ -14,6 +15,7 @@ const Layout = () => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user: any) => {
       if (user) {
+        console.log(user)
         setUser(user);
         setLoading(false);
       } else {
@@ -36,15 +38,17 @@ const Layout = () => {
 
   if (!loading && user) {
     return (
-      <CartProvider>
-        <Stack
-          screenOptions={{
-            statusBarColor: "#FFE9B1",
-            headerShown: false,
-          }}
-        />
-        <TabBar />
-      </CartProvider>
+      <StripeProvider publishableKey={process.env.EXPO_PUBLIC_STRIPE_KEY ?? ""}>
+        <CartProvider>
+          <Stack
+            screenOptions={{
+              statusBarColor: "#FFE9B1",
+              headerShown: false,
+            }}
+          />
+          <TabBar />
+        </CartProvider>
+      </StripeProvider>
     );
   }
 
