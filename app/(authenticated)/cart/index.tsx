@@ -10,11 +10,13 @@ const Cart = () => {
     { item: any; quantity: number }[] | null | undefined
   >(null);
   const [totalAmount, setTotalAmount] = useState(0);
+  const [loading, setLoading] = useState(true);
 
   const { cart, clearCart } = useCart();
 
   useEffect(() => {
     const getData = async () => {
+      setLoading(true);
       const cartItems = await getCartItems();
       setItems(cartItems);
 
@@ -27,6 +29,7 @@ const Cart = () => {
       } else {
         setTotalAmount(0);
       }
+      setLoading(false);
     };
 
     getData();
@@ -49,6 +52,14 @@ const Cart = () => {
   }, [items]);
 
   let rowRefs = new Map();
+
+  if (loading) {
+    return (
+      <View>
+        <Text>Loading...</Text>
+      </View>
+    )
+  }
 
   return (
     <View className="flex-1">

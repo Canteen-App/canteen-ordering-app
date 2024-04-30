@@ -40,3 +40,20 @@ export const getOrderDetails = async (orderId: string) => {
   const response = await fetchAPI.get(`/order/${orderId}`);
   return response.data;
 };
+
+export const getPaymentIntent = async (orderId: string) => {
+  const response = await fetchAPI.get(`/order/payment-intent/${orderId}`);
+  return response.data;
+};
+
+export const showLocalTime = (timeStr: string) => {
+  const datetime = new Date(timeStr);
+  const hours = datetime.getHours();
+  const minutes = datetime.getMinutes();
+
+  if (hours > 12) {
+    return `${hours - 12}:${minutes} pm`;
+  }
+
+  return `${hours}:${minutes} am`;
+};

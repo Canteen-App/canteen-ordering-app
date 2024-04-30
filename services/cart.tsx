@@ -30,6 +30,7 @@ export const CartProvider = ({ children }: any) => {
       } else {
         const cartObject: any = {};
         cartObject[itemId] = quantity;
+        setCart(cartObject);
         await AsyncStorage.setItem("cart", JSON.stringify(cartObject));
       }
     } catch (error) {

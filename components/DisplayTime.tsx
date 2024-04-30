@@ -1,8 +1,6 @@
 import { View, Text, TouchableOpacity } from "react-native";
 import React, { useEffect, useState } from "react";
-import { AntDesign, FontAwesome } from "@expo/vector-icons";
-import { router } from "expo-router";
-import { getDailyMeals } from "@/services/category";
+import { Image } from "expo-image";
 
 const DisplayTime = () => {
   const [currentDate, setCurrentDate] = useState("");
@@ -87,14 +85,17 @@ const DisplayTime = () => {
   }
 
   return (
-    <View className="pb-2 flex flex-row justify-between items-start rounded-b-2xl px-4 bg-brown-mid">
+    <View className="flex flex-row pt-2 justify-between items-start rounded-b-2xl px-4 bg-brown-mid">
       <View>
-        <Text className="text-lg text-brown-dark">{currentDate}</Text>
         <Text className="text-3xl font-black text-brown-dark">
           {currentDay}
         </Text>
-        <Text className="text-lg text-brown-dark">{currentTime}</Text>
+        <Text className="text-lg text-brown-dark">{currentDate} | {currentTime}</Text>
       </View>
+      <Image
+        source={require("../assets/images/logo.svg")}
+        className="w-[200px] h-[90px] object-contain"
+      />
     </View>
   );
 };

@@ -103,7 +103,7 @@ const ViewItem = () => {
                 onPress={() => setLike(false)}
                 name="heart"
                 size={30}
-                color="red"
+                color="#EE4646"
               />
             ) : (
               <AntDesign

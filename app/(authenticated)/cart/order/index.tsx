@@ -71,7 +71,6 @@ const PreOrder = () => {
 
   const makePayment = async () => {
     if (items) {
-      console.log("Checking out Order...");
       const orderCheckoutResponse = await orderCheckout(
         items.map((item) => ({
           itemId: item.item.id,
@@ -101,13 +100,11 @@ const PreOrder = () => {
 
       await presentPaymentSheet();
 
-      const checkPaymentResponse = await checkPaymentMade(
-        orderCheckoutResponse.orderDetails.id
+      await checkPaymentMade(orderCheckoutResponse.orderDetails.id);
+
+      router.push(
+        `/(authenticated)/order/${orderCheckoutResponse.orderDetails.id}`
       );
-
-      console.log(checkPaymentResponse);
-
-      console.log("Payment Complete");
     }
   };
 

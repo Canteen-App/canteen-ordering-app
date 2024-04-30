@@ -2,7 +2,7 @@ import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import React, { useEffect, useState } from "react";
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import { getToPayOrders, getToRecieveOrders } from "@/services/order";
+import { getToPayOrders, getToRecieveOrders, showLocalTime } from "@/services/order";
 
 type CurrentView = "ToPayOrder" | "ToRecieveOrder";
 
@@ -32,17 +32,7 @@ const OrdersPage = () => {
     }
   }, [currentView]);
 
-  const showLocalTime = (timeStr: string) => {
-    const datetime = new Date(timeStr);
-    const hours = datetime.getHours();
-    const minutes = datetime.getMinutes();
 
-    if (hours > 12) {
-      return `${hours - 12}:${minutes} pm`;
-    }
-
-    return `${hours}:${minutes} am`;
-  };
 
   return (
     <View className="flex-1">
@@ -142,9 +132,9 @@ const OrdersPage = () => {
                       <Text className="font-bold">
                         {new Date(
                           toRecieveOrder.orderTime
-                        ).toLocaleDateString()}
+                        ).toDateString()}
                       </Text>
-                      <Text className="font-bold">
+                      <Text className="font-bold text-right">
                         {showLocalTime(toRecieveOrder.orderTime)}
                       </Text>
                     </View>

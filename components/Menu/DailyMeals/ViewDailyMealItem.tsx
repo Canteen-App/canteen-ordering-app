@@ -25,7 +25,7 @@ const ViewCategoryItem = ({ item }: any) => {
                 onPress={() => setLike(false)}
                 name="heart"
                 size={24}
-                color="red"
+                color="#EE4646"
               />
             ) : (
               <AntDesign
