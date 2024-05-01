@@ -16,6 +16,6 @@ export const getCategoryDetails = async (categoryId: string) => {
 };
 
 export const getItemDetails = async (itemId: string) => {
-  const response = await fetchAPI.get(`/item/${itemId}`);
+  const response = await fetchAPI.get(`/item/info/${itemId}`);
   return response.data;
 };

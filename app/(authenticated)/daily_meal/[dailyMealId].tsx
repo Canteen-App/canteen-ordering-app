@@ -1,6 +1,6 @@
 import { View, Text, TouchableOpacity } from "react-native";
-import React, { useEffect, useState } from "react";
-import { router, useLocalSearchParams } from "expo-router";
+import React, { useCallback, useEffect, useState } from "react";
+import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import ViewDailyMealItem from "@/components/Menu/DailyMeals/ViewDailyMealItem";
 import { FontAwesome } from "@expo/vector-icons";
 import { getCategoryDetails } from "@/services/category";
@@ -10,17 +10,19 @@ export default function ViewDailyMeal() {
   const [loading, setLoading] = useState(true);
   const [category, setCategory] = useState<any>();
 
-  useEffect(() => {
-    const getData = async () => {
-      if (dailyMealId) {
-        const fetched_dailyMeal = await getCategoryDetails(dailyMealId);
-        setCategory(fetched_dailyMeal);
-        setLoading(false);
-      }
-    };
+  useFocusEffect(
+    useCallback(() => {
+      const getData = async () => {
+        if (dailyMealId) {
+          const fetched_dailyMeal = await getCategoryDetails(dailyMealId);
+          setCategory(fetched_dailyMeal);
+          setLoading(false);
+        }
+      };
 
-    getData();
-  }, [dailyMealId]);
+      getData();
+    }, [dailyMealId])
+  );
 
   if (loading) {
     return (

@@ -1,36 +1,28 @@
 import { View, Text, TouchableHighlight, TouchableOpacity } from "react-native";
-import React, { useEffect, useState } from "react";
-import { router, useLocalSearchParams } from "expo-router";
+import React, { useCallback, useEffect, useState } from "react";
+import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import ViewCategoryItem from "@/components/Menu/Categories/ViewCategoryItem";
 import { FontAwesome } from "@expo/vector-icons";
 import { getCategoryDetails } from "@/services/category";
 
 export default function ViewCategory() {
   const { categoryId } = useLocalSearchParams<{ categoryId: string }>();
-  const [loading, setLoading] = useState(true);
   const [category, setCategory] = useState<any>();
 
-  useEffect(() => {
-    const getData = async () => {
-      if (categoryId) {
-        const fetched_category = await getCategoryDetails(categoryId);
-        setCategory(fetched_category);
-        setLoading(false);
-      }
-    };
+  useFocusEffect(
+    useCallback(() => {
+      const getData = async () => {
+        if (categoryId) {
+          const fetched_category = await getCategoryDetails(categoryId);
+          setCategory(fetched_category);
+        }
+      };
 
-    getData();
-  }, [categoryId]);
+      getData();
+    }, [categoryId])
+  );
 
-  if (loading) {
-    return (
-      <View className="flex-1 items-center justify-center">
-        <Text>Loading...</Text>
-      </View>
-    );
-  }
-
-  if (!loading && category) {
+  if (category) {
     return (
       <View>
         <View className="flex flex-row items-center p-2">
@@ -54,7 +46,7 @@ export default function ViewCategory() {
 
   return (
     <View>
-      <Text>Error</Text>
+      <Text>Loading...</Text>
     </View>
   );
 }

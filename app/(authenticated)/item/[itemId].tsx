@@ -1,11 +1,12 @@
 import { View, Text, TouchableOpacity } from "react-native";
-import React, { useEffect, useState } from "react";
-import { router, useLocalSearchParams } from "expo-router";
+import React, { useCallback, useEffect, useState } from "react";
+import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { AntDesign, FontAwesome } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { getItemDetails } from "@/services/category";
 import { CategoryType } from "@/types";
 import { getCartItemDetails, useCart } from "@/services/cart";
+import { likeItem, unlikeItem } from "@/services/review";
 
 const ViewItem = () => {
   const { itemId } = useLocalSearchParams<{ itemId: string }>();
@@ -17,24 +18,31 @@ const ViewItem = () => {
 
   const { cart, addItemToCart } = useCart();
 
-  useEffect(() => {
-    const getData = async () => {
-      if (itemId) {
-        // Fetch Item Data
-        const fetched_item = await getItemDetails(itemId);
-        setItem(fetched_item);
-        setLoading(false);
+  useFocusEffect(
+    useCallback(() => {
+      const getData = async () => {
+        if (itemId) {
+          // Fetch Item Data
+          const fetched_item = await getItemDetails(itemId);
+          if (fetched_item.likes) {
+            setLike(true);
+          } else {
+            setLike(false);
+          }
+          setItem(fetched_item);
+          setLoading(false);
 
-        // Check if item already in cart
-        const cartItemDetails = await getCartItemDetails(itemId);
-        if (cartItemDetails) {
-          setCartItemQuatity(cartItemDetails);
+          // Check if item already in cart
+          const cartItemDetails = await getCartItemDetails(itemId);
+          if (cartItemDetails) {
+            setCartItemQuatity(cartItemDetails);
+          }
         }
-      }
-    };
+      };
 
-    getData();
-  }, [itemId]);
+      getData();
+    }, [itemId])
+  );
 
   useEffect(() => {
     const checkCart = async () => {
@@ -72,6 +80,16 @@ const ViewItem = () => {
     </View>;
   }
 
+  const userLikeItem = async () => {
+    setLike(true);
+    await likeItem(itemId);
+  };
+
+  const userUnlikeItem = async () => {
+    setLike(false);
+    await unlikeItem(itemId);
+  };
+
   const goBack = () => {
     if (item.category.categoryType == CategoryType.DAILY_MEAL) {
       router.push(`/(authenticated)/daily_meal/${item.category.id}`);
@@ -100,14 +118,14 @@ const ViewItem = () => {
           <Text className="font-bold w-fit h-fit">
             {like ? (
               <AntDesign
-                onPress={() => setLike(false)}
+                onPress={userUnlikeItem}
                 name="heart"
                 size={30}
                 color="#EE4646"
               />
             ) : (
               <AntDesign
-                onPress={() => setLike(true)}
+                onPress={userLikeItem}
                 name="hearto"
                 size={30}
                 color="grey"

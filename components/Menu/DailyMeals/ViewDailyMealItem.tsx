@@ -1,10 +1,35 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, ImageBackground, TouchableOpacity } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import { router } from "expo-router";
+import { likeItem, unlikeItem } from "@/services/review";
 
 const ViewCategoryItem = ({ item }: any) => {
   const [like, setLike] = useState(false);
+
+  useEffect(() => {
+    const getData = async () => {
+      if (item) {
+        if (item.likes) {
+          setLike(true);
+        } else {
+          setLike(false);
+        }
+      }
+    };
+
+    getData();
+  }, [item]);
+
+  const userLikeItem = async () => {
+    setLike(true);
+    await likeItem(item.id);
+  };
+
+  const userUnlikeItem = async () => {
+    setLike(false);
+    await unlikeItem(item.id);
+  };
 
   return (
     <View className="w-full p-2 h-[200px] flex">
@@ -22,14 +47,14 @@ const ViewCategoryItem = ({ item }: any) => {
           <Text className="font-bold w-fit h-fit">
             {like ? (
               <AntDesign
-                onPress={() => setLike(false)}
+                onPress={userUnlikeItem}
                 name="heart"
                 size={24}
                 color="#EE4646"
               />
             ) : (
               <AntDesign
-                onPress={() => setLike(true)}
+                onPress={userLikeItem}
                 name="hearto"
                 size={24}
                 color="white"
@@ -42,7 +67,9 @@ const ViewCategoryItem = ({ item }: any) => {
           className="flex-grow flex justify-end"
         >
           <View className="p-2">
-            <Text className="text-2xl text-white font-bold">{item.name}</Text>
+            <Text className="text-2xl text-white font-bold">
+              {item.name} asdf
+            </Text>
             <Text className="text-white font-black text-xl">
               Rs {item.price}
             </Text>
