@@ -68,7 +68,7 @@ const ViewCategoryItem = ({ item }: any) => {
         >
           <View className="p-2">
             <Text className="text-2xl text-white font-bold">
-              {item.name} asdf
+              {item.name}
             </Text>
             <Text className="text-white font-black text-xl">
               Rs {item.price}

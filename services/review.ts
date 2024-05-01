@@ -14,3 +14,11 @@ export const unlikeItem = async (itemId: string) => {
   const response = await fetchAPI.get(`/review/unlike/${itemId}`);
   return response.data;
 };
+
+export const makeReview = async (
+  itemId: string,
+  data: { rating: number; feedback?: string }
+) => {
+  const response = await fetchAPI.post(`/review/feedback/${itemId}`, data);
+  return response.data;
+};

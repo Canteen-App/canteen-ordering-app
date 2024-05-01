@@ -1,4 +1,10 @@
-import { View, Text, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  TextInput,
+  KeyboardAvoidingView,
+} from "react-native";
 import React, { useCallback, useEffect, useState } from "react";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { AntDesign, FontAwesome } from "@expo/vector-icons";
@@ -7,6 +13,7 @@ import { getItemDetails } from "@/services/category";
 import { CategoryType } from "@/types";
 import { getCartItemDetails, useCart } from "@/services/cart";
 import { likeItem, unlikeItem } from "@/services/review";
+import MakeReviewForm from "@/components/Menu/MakeReview";
 
 const ViewItem = () => {
   const { itemId } = useLocalSearchParams<{ itemId: string }>();
@@ -15,8 +22,9 @@ const ViewItem = () => {
   const [like, setLike] = useState(false);
   const [count, setCount] = useState(1);
   const [cartItemQuantity, setCartItemQuatity] = useState();
-
+  const [openReview, setOpenReview] = useState(false);
   const { cart, addItemToCart } = useCart();
+  const [reviews, setReviews] = useState([]);
 
   useFocusEffect(
     useCallback(() => {
@@ -30,6 +38,7 @@ const ViewItem = () => {
             setLike(false);
           }
           setItem(fetched_item);
+          setReviews(fetched_item.reviews);
           setLoading(false);
 
           // Check if item already in cart
@@ -106,10 +115,10 @@ const ViewItem = () => {
         </TouchableOpacity>
       </View>
       <View className="px-4 flex-grow">
-        <View className="w-full h-[250px] rounded-lg overflow-hidden">
+        <View className="w-full h-[200px] rounded-lg overflow-hidden">
           <Image className="w-full h-full" source={item?.imageURL} />
         </View>
-        <View className="mt-5 flex flex-row justify-between">
+        <View className="mt-2 flex flex-row justify-between">
           <View className="h-fit">
             <Text className="text-base font-light">{item?.category.name}</Text>
             <Text className="text-3xl font-black">{item?.name}</Text>
@@ -133,7 +142,72 @@ const ViewItem = () => {
             )}
           </Text>
         </View>
-        <Text className="mt-2 text-base">{item?.description}</Text>
+        <Text className="text-base">{item?.description}</Text>
+        <View className="mt-2">
+          <View className="flex flex-row justify-between">
+            <View>
+              <Text className="text-black font-bold text-lg">
+                <AntDesign name="star" size={18} color="#FFB906" />
+                5.0
+              </Text>
+              <Text className="text-xl font-light">Reviews</Text>
+            </View>
+            <TouchableOpacity
+              onPress={() => setOpenReview(true)}
+              className="bg-brown-mid p-4 rounded-xl flex flex-row"
+            >
+              <FontAwesome name="edit" color="#744E15" size={30} />
+              <Text className="text-xl font-black pl-2 text-brown-dark">
+                Make Review
+              </Text>
+            </TouchableOpacity>
+          </View>
+          <View className="mt-2">
+            {reviews &&
+              reviews.map((review: any, index: number) => (
+                <View key={index} className="bg-brown-light rounded-lg p-2">
+                  <View className="flex flex-row items-center">
+                    <View className="flex flex-row gap-x-2 flex-grow items-center">
+                      <View className="bg-yellow rounded-full">
+                        <FontAwesome
+                          name="user-circle"
+                          size={22}
+                          color="#744E15"
+                        />
+                      </View>
+                      <Text className="text-xl font-black text-brown-dark">
+                        {review?.customer?.name}
+                      </Text>
+                    </View>
+                    <View className="flex flex-row gap-x-1">
+                      {Array(5)
+                        .fill(0)
+                        .map((_, index) => (
+                          <View>
+                            <Text>
+                              {index + 1 <= review.rating ? (
+                                <AntDesign
+                                  name="star"
+                                  size={20}
+                                  color="#FFB906"
+                                />
+                              ) : (
+                                <AntDesign
+                                  name="staro"
+                                  size={20}
+                                  color="grey"
+                                />
+                              )}
+                            </Text>
+                          </View>
+                        ))}
+                    </View>
+                  </View>
+                  <Text className="text-lg">{review.feedback}</Text>
+                </View>
+              ))}
+          </View>
+        </View>
       </View>
       <View className="w-full flex flex-row justify-between bg-brown-light p-5 rounded-t-2xl">
         {item && (
@@ -189,6 +263,14 @@ const ViewItem = () => {
           </>
         )}
       </View>
+
+      {openReview && (
+        <MakeReviewForm
+          setOpenReview={setOpenReview}
+          item={item}
+          setReviews={setReviews}
+        />
+      )}
     </View>
   );
 };
