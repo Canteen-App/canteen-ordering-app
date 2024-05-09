@@ -1,6 +1,11 @@
 import { View, Text, TouchableOpacity, ScrollView, Image } from "react-native";
 import React, { useEffect, useState } from "react";
-import { FontAwesome, Ionicons } from "@expo/vector-icons";
+import {
+  FontAwesome,
+  FontAwesome5,
+  FontAwesome6,
+  Ionicons,
+} from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
 import {
   checkPaymentMade,
@@ -17,11 +22,16 @@ import {
 import { auth } from "@/firebase";
 import { getCustomerAccount } from "@/services/customer";
 import { onAuthStateChanged } from "firebase/auth";
+import GetCode from "@/components/GetCode";
+import { useItemCollectedNotification } from "@/context/itemsCollectedEvent";
 
 const OrderDetails = () => {
   const [order, setOrder] = useState<any>();
   const { orderId } = useLocalSearchParams<{ orderId: string }>();
   const [user, setUser] = useState<any>(null);
+  const [getCode, setGetCode] = useState(false);
+
+  const { itemCollectedNotification } = useItemCollectedNotification();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user: any) => {
@@ -40,12 +50,13 @@ const OrderDetails = () => {
     if (orderId) {
       const orderDetails = await getOrderDetails(orderId);
       setOrder(orderDetails);
+      setGetCode(false);
     }
   };
 
   useEffect(() => {
     getData();
-  }, [orderId]);
+  }, [orderId, itemCollectedNotification]);
 
   if (!order) {
     return (
@@ -92,23 +103,30 @@ const OrderDetails = () => {
         </Text>
       </View>
 
-      <View className="px-4">
-        <Text className="font-bold text-brown-dark">Order Id: {order.id}</Text>
-        <Text className="">
-          Placed on {new Date(order.orderTime).toDateString()}{" "}
-          {showLocalTime(order.orderTime)}
-        </Text>
+      <View className="mx-4 border-b-2 border-brown-dark flex flex-row items-start justify-between">
+        <View>
+          <Text className="font-bold text-lg text-brown-dark">Order Id:</Text>
+          <Text className="font-black text-xl">{order.id.split("-")[0]}</Text>
+        </View>
+        <View className="">
+          <Text className="text-right font-bold text-lg">
+            {new Date(order.orderTime).toDateString()}
+          </Text>
+          <Text className="text-right text-lg">
+            {showLocalTime(order.orderTime)}
+          </Text>
+        </View>
       </View>
 
       {order.status == "PENDING_COLLECTION" && (
-        <View className="flex flex-row px-4 items-center">
+        <View className="flex flex-row mt-2 px-4 items-center">
           <View className="flex flex-row items-center gap-2 pr-2">
             <Text>
               <FontAwesome name="check" size={25} color="green" />
             </Text>
             <Text className="font-black text-xl text-green-700 ">Paid</Text>
           </View>
-          <Text className="font-bold text-lg pl-2 border-l-2">
+          <Text className="font-bold text-lg pl-2 border-l-2 border-brown-dark">
             Pending Collection
           </Text>
         </View>
@@ -198,6 +216,17 @@ const OrderDetails = () => {
             Rs {order.payment.totalAmount.toLocaleString()}
           </Text>
         </View>
+        {order.status == "PENDING_COLLECTION" && (
+          <TouchableOpacity
+            onPress={() => setGetCode(true)}
+            className="bg-yellow p-3 rounded-lg flex flex-row items-center justify-between"
+          >
+            <FontAwesome6 name="key" size={35} color="black" />
+            <Text className="text-black font-black text-center text-2xl">
+              Get Verification Code
+            </Text>
+          </TouchableOpacity>
+        )}
         {order.status == "PENDING_PAYMENT" && (
           <TouchableOpacity
             onPress={makePendingPayment}
@@ -210,6 +239,8 @@ const OrderDetails = () => {
           </TouchableOpacity>
         )}
       </View>
+
+      {getCode && <GetCode orderId={orderId} setGetCode={setGetCode} />}
     </View>
   );
 };

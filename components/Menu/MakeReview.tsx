@@ -28,13 +28,15 @@ const MakeReviewForm = ({ setOpenReview, item, setReviews }: any) => {
       <View className="relative h-full w-full flex items-center justify-center">
         <View className="w-full absolute h-full bg-brown-dark opacity-50" />
         <KeyboardAvoidingView className="w-[90%] h-[60%] relative p-4 bg-white rounded-xl">
-          <TouchableOpacity
-            onPress={() => setOpenReview(false)}
-            className="w-10 h-10 flex justify-center items-center rounded-full absolute top-2 right-2 bg-red-dark"
-          >
-            <FontAwesome name="times" size={30} color="white" />
-          </TouchableOpacity>
-          <Text className="text-2xl font-black">Make Review</Text>
+          <View className="flex flex-row justify-between">
+            <Text className="text-2xl font-black">Make Review</Text>
+            <TouchableOpacity
+              onPress={() => setOpenReview(false)}
+              className="w-10 h-10 flex justify-center items-center rounded-full bg-red-dark"
+            >
+              <FontAwesome name="times" size={30} color="white" />
+            </TouchableOpacity>
+          </View>
           <View className="flex flex-row justify-between p-2 items-center">
             {Array(5)
               .fill(0)
@@ -70,9 +72,9 @@ const MakeReviewForm = ({ setOpenReview, item, setReviews }: any) => {
             <View className="flex-grow" />
             <TouchableOpacity
               onPress={createReview}
-              className="bg-yellow roudned-lg p-2"
+              className="bg-yellow rounded-xl p-2"
             >
-              <Text>Send Feedback</Text>
+              <Text className="font-black text-xl">Send Feedback</Text>
             </TouchableOpacity>
           </View>
         </KeyboardAvoidingView>

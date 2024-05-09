@@ -46,14 +46,28 @@ export const getPaymentIntent = async (orderId: string) => {
   return response.data;
 };
 
+export const generateOrderCode = async (orderId: string) => {
+  console.log("Fetching Code...")
+  const response = await fetchAPI.get(`/order/generate-code/${orderId}`);
+  return response.data;
+};
+
 export const showLocalTime = (timeStr: string) => {
   const datetime = new Date(timeStr);
   const hours = datetime.getHours();
   const minutes = datetime.getMinutes();
 
   if (hours > 12) {
-    return `${hours - 12}:${minutes} pm`;
+    return `${setFollowingZeros(hours - 12)}:${setFollowingZeros(minutes)} pm`;
   }
 
-  return `${hours}:${minutes} am`;
+  return `${setFollowingZeros(hours)}:${setFollowingZeros(minutes)} am`;
+};
+
+const setFollowingZeros = (timeNo: number) => {
+  if (timeNo < 10) {
+    return `0${timeNo}`;
+  }
+
+  return String(timeNo);
 };

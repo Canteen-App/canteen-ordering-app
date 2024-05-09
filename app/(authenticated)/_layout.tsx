@@ -4,9 +4,9 @@ import { Redirect, Stack } from "expo-router";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "@/firebase";
 import TabBar from "@/components/TabBar";
-import { CartProvider } from "@/services/cart";
-import { getCustomerAccount } from "@/services/customer";
 import { StripeProvider } from "@stripe/stripe-react-native";
+import { ItemCollectedNotificationProvider } from "@/context/itemsCollectedEvent";
+import { CartProvider } from "@/services/cart";
 
 const Layout = () => {
   const [user, setUser] = useState<any>();
@@ -39,13 +39,15 @@ const Layout = () => {
     return (
       <StripeProvider publishableKey={process.env.EXPO_PUBLIC_STRIPE_KEY ?? ""}>
         <CartProvider>
-          <Stack
-            screenOptions={{
-              statusBarColor: "#FFE9B1",
-              headerShown: false,
-            }}
-          />
-          <TabBar />
+          <ItemCollectedNotificationProvider>
+            <Stack
+              screenOptions={{
+                statusBarColor: "#FFE9B1",
+                headerShown: false,
+              }}
+            />
+            <TabBar />
+          </ItemCollectedNotificationProvider>
         </CartProvider>
       </StripeProvider>
     );

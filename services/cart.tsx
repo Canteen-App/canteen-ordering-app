@@ -96,15 +96,17 @@ export const getCartItems = async () => {
   }
 };
 
-export const getCartItemDetails = async (itemId: string) => {
-  try {
-    const cart = await AsyncStorage.getItem("cart");
-    if (cart) {
-      const cartObject = JSON.parse(cart);
-      return cartObject[itemId];
+export const getCartItemDetails = async (itemId?: string) => {
+  if (itemId) {
+    try {
+      const cart = await AsyncStorage.getItem("cart");
+      if (cart) {
+        const cartObject = JSON.parse(cart);
+        return cartObject[itemId];
+      }
+    } catch (error) {
+      console.log(error);
     }
-  } catch (error) {
-    console.log(error);
   }
 };
 

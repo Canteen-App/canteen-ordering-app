@@ -1,7 +1,7 @@
 import { View, Text, TouchableOpacity, ScrollView } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { AntDesign, FontAwesome } from "@expo/vector-icons";
-import { router } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 import { getCartItems, useCart } from "@/services/cart";
 import CartItem from "@/components/Cart/CartItem";
 
@@ -10,30 +10,32 @@ const Cart = () => {
     { item: any; quantity: number }[] | null | undefined
   >(null);
   const [totalAmount, setTotalAmount] = useState(0);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
-  const { cart, clearCart } = useCart();
+  const { clearCart } = useCart();
 
-  useEffect(() => {
-    const getData = async () => {
-      setLoading(true);
-      const cartItems = await getCartItems();
-      setItems(cartItems);
+  useFocusEffect(
+    useCallback(() => {
+      const getData = async () => {
+        setLoading(true);
+        const cartItems = await getCartItems();
+        setItems(cartItems);
 
-      if (cartItems) {
-        let total = 0;
-        for (let cartItem of cartItems) {
-          total += parseInt(cartItem.item.price) * cartItem.quantity;
+        if (cartItems) {
+          let total = 0;
+          for (let cartItem of cartItems) {
+            total += parseInt(cartItem.item.price) * cartItem.quantity;
+          }
+          setTotalAmount(total);
+        } else {
+          setTotalAmount(0);
         }
-        setTotalAmount(total);
-      } else {
-        setTotalAmount(0);
-      }
-      setLoading(false);
-    };
+        setLoading(false);
+      };
 
-    getData();
-  }, [cart]);
+      getData();
+    }, [])
+  );
 
   useEffect(() => {
     const updateTotal = () => {
@@ -53,12 +55,17 @@ const Cart = () => {
 
   let rowRefs = new Map();
 
+  const clearUserCart = async () => {
+    await clearCart();
+    setItems([]);
+  };
+
   if (loading) {
     return (
       <View>
-        <Text>Loading...</Text>
+        <Text>Loadding...</Text>
       </View>
-    )
+    );
   }
 
   return (
@@ -71,7 +78,7 @@ const Cart = () => {
         <Text className="text-3xl font-black text-brown-dark">Cart</Text>
         <View className="flex-grow" />
         <TouchableOpacity
-          onPress={clearCart}
+          onPress={clearUserCart}
           className="bg-red-500 p-2 rounded-lg"
         >
           <Text className="text-2xl font-black text-white">Clear Cart</Text>

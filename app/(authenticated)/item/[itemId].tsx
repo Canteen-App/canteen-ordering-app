@@ -1,10 +1,4 @@
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  TextInput,
-  KeyboardAvoidingView,
-} from "react-native";
+import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import React, { useCallback, useEffect, useState } from "react";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { AntDesign, FontAwesome } from "@expo/vector-icons";
@@ -143,7 +137,7 @@ const ViewItem = () => {
           </Text>
         </View>
         <Text className="text-base">{item?.description}</Text>
-        <View className="mt-2">
+        <View className="mt-2 flex-1">
           <View className="flex flex-row justify-between">
             <View>
               <Text className="text-black font-bold text-lg">
@@ -162,10 +156,13 @@ const ViewItem = () => {
               </Text>
             </TouchableOpacity>
           </View>
-          <View className="mt-2">
+          <ScrollView className="mt-2 flex-grow">
             {reviews &&
               reviews.map((review: any, index: number) => (
-                <View key={index} className="bg-brown-light rounded-lg p-2">
+                <View
+                  key={index}
+                  className="bg-brown-light my-1 rounded-lg p-2"
+                >
                   <View className="flex flex-row items-center">
                     <View className="flex flex-row gap-x-2 flex-grow items-center">
                       <View className="bg-yellow rounded-full">
@@ -183,7 +180,7 @@ const ViewItem = () => {
                       {Array(5)
                         .fill(0)
                         .map((_, index) => (
-                          <View>
+                          <View key={index}>
                             <Text>
                               {index + 1 <= review.rating ? (
                                 <AntDesign
@@ -206,7 +203,7 @@ const ViewItem = () => {
                   <Text className="text-lg">{review.feedback}</Text>
                 </View>
               ))}
-          </View>
+          </ScrollView>
         </View>
       </View>
       <View className="w-full flex flex-row justify-between bg-brown-light p-5 rounded-t-2xl">
@@ -250,7 +247,7 @@ const ViewItem = () => {
                   </TouchableOpacity>
                 </View>
                 <TouchableOpacity
-                  onPress={() => addItemToCart(itemId, count)}
+                  onPress={() => addItemToCart(itemId ?? "", count)}
                   className="flex flex-row items-center rounded-xl p-4 bg-yellow"
                 >
                   <AntDesign name="shoppingcart" size={35} color="#744E15" />
