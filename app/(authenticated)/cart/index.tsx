@@ -12,7 +12,7 @@ const Cart = () => {
   const [totalAmount, setTotalAmount] = useState(0);
   const [loading, setLoading] = useState(false);
 
-  const { clearCart } = useCart();
+  const { clearCart } = useCart(); // Carrt Context
 
   useFocusEffect(
     useCallback(() => {

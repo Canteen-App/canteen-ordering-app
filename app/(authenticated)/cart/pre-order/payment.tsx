@@ -10,22 +10,39 @@ import {
   initPaymentSheet,
   useStripe,
 } from "@stripe/stripe-react-native";
-import { createPaymentIntent, orderCheckout } from "@/services/order";
+import {
+  checkPaymentMade,
+  convertToDateStr,
+  createPaymentIntent,
+  orderCheckout,
+} from "@/services/order";
 import { auth } from "@/firebase";
 import { getCustomerAccount } from "@/services/customer";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 const PreOrderPayment = () => {
-  const { date } = useLocalSearchParams();
+  const { date } = useLocalSearchParams() as { date: string };
 
   const [items, setItems] = useState<
     { item: any; quantity: number }[] | null | undefined
   >(null);
   const [totalAmount, setTotalAmount] = useState(0);
 
-  const {  clearCart } = useCart();
-
+  const { clearCart } = useCart();
   const { initPaymentSheet, presentPaymentSheet } = useStripe();
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (user: any) => {
+      if (user) {
+        const customer = await getCustomerAccount(user.uid);
+        setUser({ ...customer, ...user });
+      } else {
+        setUser(null);
+      }
+    });
+    return unsubscribe;
+  }, []);
 
   useEffect(() => {
     const getData = async () => {
@@ -45,38 +62,41 @@ const PreOrderPayment = () => {
   }, []);
 
   const makePayment = async () => {
-    if (items) {
-      console.log("Checking out Order...");
+    if (items && date) {
+      // Get Order checkout details -> checkoutOrder function from backend
       const orderCheckoutResponse = await orderCheckout(
         items.map((item) => ({
           itemId: item.item.id,
           quantity: item.quantity,
         })),
-        totalAmount
+        totalAmount,
+        convertToDateStr(date) // Pass Pre Order Date Str
       );
 
-      if (orderCheckoutResponse) {
-        clearCart();
-      }
-      console.log(orderCheckoutResponse);
+      clearCart();
+
+      // Stripe Intilises Payment using Payment Intent made in the backend
+      await initPaymentSheet({
+        merchantDisplayName: "Canteen Pvt Ltd",
+        paymentIntentClientSecret: orderCheckoutResponse.paymentIntent,
+        billingDetailsCollectionConfiguration: {
+          email: user.email,
+          name: user.name,
+          address: PaymentSheet.AddressCollectionMode.NEVER,
+        },
+        customerId: user.id,
+      });
+
+      // Stripe Displays the payment sheet and makes a payment to the respective Payment Intent
+      await presentPaymentSheet();
+
+      // Backend Validates payment status of the order's payment intent
+      await checkPaymentMade(orderCheckoutResponse.orderDetails.id);
+
+      router.push(
+        `/(authenticated)/order/${orderCheckoutResponse.orderDetails.id}`
+      );
     }
-    // console.log("Processing Payment...");
-    // const paymentIntentResponse = await createPaymentIntent(totalAmount);
-
-    // await initPaymentSheet({
-    //   merchantDisplayName: "Canteen Pvt Ltd",
-    //   paymentIntentClientSecret: paymentIntentResponse.paymentIntent,
-    //   billingDetailsCollectionConfiguration: {
-    //     email: user.email,
-    //     name: user.name,
-    //     address: PaymentSheet.AddressCollectionMode.NEVER,
-    //   },
-    //   customerId: user.id,
-    // });
-
-    // await presentPaymentSheet();
-
-    // console.log("Payment Complete");
   };
 
   return (

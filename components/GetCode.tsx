@@ -12,16 +12,20 @@ import { useFocusEffect } from "expo-router";
 
 const GetCode = ({ setGetCode, orderId }: any) => {
   const [code, setCode] = useState("");
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
   useFocusEffect(
     useCallback(() => {
       const getCode = async () => {
         setLoading(true);
-        console.log("Getting code..");
+        setError("");
         const code = await generateOrderCode(orderId);
-        const codeStr = code.verifyOrderCode.toString();
-        setCode(codeStr.slice(0, 3) + "-" + codeStr.slice(3));
-        console.log(code);
+        if (code) {
+          const codeStr = code.verifyOrderCode.toString();
+          setCode(codeStr.slice(0, 3) + "-" + codeStr.slice(3));
+        } else {
+          setError("Currently Can't collect Items from this Order");
+        }
         setLoading(false);
       };
       getCode();
@@ -55,6 +59,13 @@ const GetCode = ({ setGetCode, orderId }: any) => {
               </Text>
               <Text className="text-center pt-2 pb-5">
                 This code is only valid for 5 minutes
+              </Text>
+            </View>
+          )}
+          {error && (
+            <View>
+              <Text className="text-center py-4 text-xl text-red-700 font-bold">
+                {error}
               </Text>
             </View>
           )}

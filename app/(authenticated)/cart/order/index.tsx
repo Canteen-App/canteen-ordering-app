@@ -13,14 +13,12 @@ import { auth } from "@/firebase";
 import { getCustomerAccount } from "@/services/customer";
 import { onAuthStateChanged } from "firebase/auth";
 
-const PreOrder = () => {
+const Order = () => {
   const [items, setItems] = useState<
     { item: any; quantity: number }[] | null | undefined
   >(null);
   const [totalAmount, setTotalAmount] = useState(0);
-
   const { clearCart } = useCart();
-
   const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
@@ -32,7 +30,6 @@ const PreOrder = () => {
         setUser(null);
       }
     });
-
     return unsubscribe;
   }, []);
 
@@ -49,7 +46,6 @@ const PreOrder = () => {
         setTotalAmount(total);
       }
     };
-
     getData();
   }, []);
 
@@ -65,12 +61,12 @@ const PreOrder = () => {
         setTotalAmount(total);
       }
     };
-
     updateTotal();
   }, [items]);
 
   const makePayment = async () => {
     if (items) {
+      // Get Order checkout details -> checkoutOrder function from backend
       const orderCheckoutResponse = await orderCheckout(
         items.map((item) => ({
           itemId: item.item.id,
@@ -79,14 +75,9 @@ const PreOrder = () => {
         totalAmount
       );
 
-      if (orderCheckoutResponse) {
-        clearCart();
-      }
+      clearCart();
 
-      console.log(orderCheckoutResponse);
-
-      console.log("Processing Payment...");
-
+      // Stripe Intilises Payment using Payment Intent made in the backend
       await initPaymentSheet({
         merchantDisplayName: "Canteen Pvt Ltd",
         paymentIntentClientSecret: orderCheckoutResponse.paymentIntent,
@@ -98,8 +89,10 @@ const PreOrder = () => {
         customerId: user.id,
       });
 
+      // Stripe Displays the payment sheet and makes a payment to the respective Payment Intent
       await presentPaymentSheet();
 
+      // Backend Validates payment status of the order's payment intent
       await checkPaymentMade(orderCheckoutResponse.orderDetails.id);
 
       router.push(
@@ -179,4 +172,4 @@ const PreOrder = () => {
   );
 };
 
-export default PreOrder;
+export default Order;

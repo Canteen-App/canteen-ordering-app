@@ -2,7 +2,10 @@ import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import React, { useEffect, useState } from "react";
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import { getToPayOrders, getToRecieveOrders, showLocalTime } from "@/services/order";
+import {
+  getToPayOrders,
+  getToRecieveOrders,
+} from "@/services/order";
 
 type CurrentView = "ToPayOrder" | "ToRecieveOrder";
 
@@ -31,8 +34,6 @@ const OrdersPage = () => {
       getData();
     }
   }, [currentView]);
-
-
 
   return (
     <View className="flex-1">
@@ -88,14 +89,6 @@ const OrdersPage = () => {
                         Payment Pending
                       </Text>
                     </View>
-                    <View>
-                      <Text className="font-bold">
-                        {new Date(toPayOrder.orderTime).toLocaleDateString()}
-                      </Text>
-                      <Text className="font-bold">
-                        {showLocalTime(toPayOrder.orderTime)}
-                      </Text>
-                    </View>
                   </View>
 
                   <View className="flex mt-4 flex-row justify-between">
@@ -127,16 +120,6 @@ const OrdersPage = () => {
                     <View>
                       <Text className="text-xs">{toRecieveOrder.id}</Text>
                       <Text className="text-green-700 font-bold">Paid</Text>
-                    </View>
-                    <View>
-                      <Text className="font-bold">
-                        {new Date(
-                          toRecieveOrder.orderTime
-                        ).toDateString()}
-                      </Text>
-                      <Text className="font-bold text-right">
-                        {showLocalTime(toRecieveOrder.orderTime)}
-                      </Text>
                     </View>
                   </View>
 

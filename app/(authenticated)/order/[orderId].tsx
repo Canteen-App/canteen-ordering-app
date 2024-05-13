@@ -49,6 +49,7 @@ const OrderDetails = () => {
   const getData = async () => {
     if (orderId) {
       const orderDetails = await getOrderDetails(orderId);
+      console.log(orderDetails.isPreOrder);
       setOrder(orderDetails);
       setGetCode(false);
     }
@@ -99,7 +100,7 @@ const OrderDetails = () => {
         </TouchableOpacity>
         <Ionicons name="receipt-outline" size={35} color="#744E15" />
         <Text className="text-3xl font-black text-brown-dark">
-          Order Details
+          {order.isPreOrder ? "Pre-Order Details" : "Order Details"}
         </Text>
       </View>
 
@@ -108,14 +109,23 @@ const OrderDetails = () => {
           <Text className="font-bold text-lg text-brown-dark">Order Id:</Text>
           <Text className="font-black text-xl">{order.id.split("-")[0]}</Text>
         </View>
-        <View className="">
-          <Text className="text-right font-bold text-lg">
-            {new Date(order.orderTime).toDateString()}
-          </Text>
-          <Text className="text-right text-lg">
-            {showLocalTime(order.orderTime)}
-          </Text>
-        </View>
+        {order.isPreOrder ? (
+          <View className="">
+            <Text className="text-right font-bold text-lg">
+              {new Date(order.orderDate).toDateString()}
+            </Text>
+            <Text className="text-right text-lg font-black">Pre Ordered</Text>
+          </View>
+        ) : (
+          <View className="">
+            <Text className="text-right font-bold text-lg">
+              {new Date(order.orderPlaced).toDateString()}
+            </Text>
+            <Text className="text-right text-lg">
+              {showLocalTime(order.orderPlaced)}
+            </Text>
+          </View>
+        )}
       </View>
 
       {order.status == "PENDING_COLLECTION" && (

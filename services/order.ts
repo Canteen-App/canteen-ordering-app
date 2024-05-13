@@ -12,11 +12,13 @@ export const orderCheckout = async (
     itemId: any;
     quantity: number;
   }[],
-  totalAmount: number
+  totalAmount: number,
+  preOrderDate?: string
 ) => {
   const response = await fetchAPI.post("/order/checkout", {
     orderList: itemList,
     currentUserDiplayedAmount: totalAmount,
+    preOrderDate: preOrderDate,
   });
   return response.data;
 };
@@ -47,7 +49,6 @@ export const getPaymentIntent = async (orderId: string) => {
 };
 
 export const generateOrderCode = async (orderId: string) => {
-  console.log("Fetching Code...")
   const response = await fetchAPI.get(`/order/generate-code/${orderId}`);
   return response.data;
 };
@@ -62,6 +63,31 @@ export const showLocalTime = (timeStr: string) => {
   }
 
   return `${setFollowingZeros(hours)}:${setFollowingZeros(minutes)} am`;
+};
+
+export const convertToDateStr = (dateStr: string) => {
+  const months = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+
+  const parts = dateStr.split(" ");
+  const year = parseInt(parts[3], 10);
+  const monthIndex = months.indexOf(parts[1]);
+  const day = parseInt(parts[2], 10);
+
+  const date = new Date(year, monthIndex, day);
+  return date.toISOString().split("T")[0];
 };
 
 const setFollowingZeros = (timeNo: number) => {

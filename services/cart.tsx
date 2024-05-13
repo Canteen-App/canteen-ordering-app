@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getItemDetails } from "./category";
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useState } from "react";
 
 const CartContext = createContext({
   cart: [] as any,
@@ -10,13 +10,15 @@ const CartContext = createContext({
 });
 
 export const CartProvider = ({ children }: any) => {
+  // Cart Details State
   const [cart, setCart] = useState<any[]>([]);
 
   const addItemToCart = async (itemId: string, quantity: number) => {
     try {
-      const cart = await AsyncStorage.getItem("cart");
-      if (cart) {
-        const cartObject = JSON.parse(cart);
+      // Global Presistent Cart Storage
+      const globalCart = await AsyncStorage.getItem("cart");
+      if (globalCart) {
+        const cartObject = JSON.parse(globalCart);
         if (cartObject[itemId]) {
           const newQuantity = (parseInt(cartObject[itemId]) ?? 0) + quantity;
           if (newQuantity >= 1 && newQuantity < 100) {
@@ -25,7 +27,9 @@ export const CartProvider = ({ children }: any) => {
         } else {
           cartObject[itemId] = quantity;
         }
-        setCart(cartObject);
+        setCart(cartObject); // Update local cart state
+
+        // Update Gloabl Cart Storage
         await AsyncStorage.setItem("cart", JSON.stringify(cartObject));
       } else {
         const cartObject: any = {};
