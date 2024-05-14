@@ -12,7 +12,6 @@ import {
 } from "@stripe/stripe-react-native";
 import {
   checkPaymentMade,
-  convertToDateStr,
   createPaymentIntent,
   orderCheckout,
 } from "@/services/order";
@@ -70,7 +69,7 @@ const PreOrderPayment = () => {
           quantity: item.quantity,
         })),
         totalAmount,
-        convertToDateStr(date) // Pass Pre Order Date Str
+        date // Pass Pre Order Date Str
       );
 
       clearCart();
@@ -151,7 +150,9 @@ const PreOrderPayment = () => {
       <View className="bg-brown-light px-5 py-2 rounded-t-3xl">
         <View className="py-2 flex flex-row justify-between border-b-2">
           <Text className="text-black font-black text-xl">Pre-Order Date</Text>
-          <Text className="text-black font-black text-xl">{date}</Text>
+          <Text className="text-black font-black text-xl">
+            {new Date(date).toDateString()}
+          </Text>
         </View>
         <View className="py-2 flex flex-row justify-between">
           <Text className="text-brown-dark font-black text-2xl">

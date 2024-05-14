@@ -17,19 +17,21 @@ export const orderCheckout = async (
 ) => {
   const response = await fetchAPI.post("/order/checkout", {
     orderList: itemList,
-    currentUserDiplayedAmount: totalAmount,
+    currentUserDisplayedAmount: totalAmount,
     preOrderDate: preOrderDate,
   });
   return response.data;
 };
 
 export const getToPayOrders = async () => {
-  const response = await fetchAPI.get("/order/to-pay");
+  const response = await fetchAPI.get("/order/unpaid");
+  console.log(response.data);
   return response.data;
 };
 
 export const getToRecieveOrders = async () => {
-  const response = await fetchAPI.get("/order/to-recieve");
+  const response = await fetchAPI.get("/order/to-receive");
+  console.log(response.data);
   return response.data;
 };
 
@@ -39,7 +41,7 @@ export const checkPaymentMade = async (orderId: string) => {
 };
 
 export const getOrderDetails = async (orderId: string) => {
-  const response = await fetchAPI.get(`/order/${orderId}`);
+  const response = await fetchAPI.get(`/order/customer/${orderId}`);
   return response.data;
 };
 
@@ -63,31 +65,6 @@ export const showLocalTime = (timeStr: string) => {
   }
 
   return `${setFollowingZeros(hours)}:${setFollowingZeros(minutes)} am`;
-};
-
-export const convertToDateStr = (dateStr: string) => {
-  const months = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec",
-  ];
-
-  const parts = dateStr.split(" ");
-  const year = parseInt(parts[3], 10);
-  const monthIndex = months.indexOf(parts[1]);
-  const day = parseInt(parts[2], 10);
-
-  const date = new Date(year, monthIndex, day);
-  return date.toISOString().split("T")[0];
 };
 
 const setFollowingZeros = (timeNo: number) => {

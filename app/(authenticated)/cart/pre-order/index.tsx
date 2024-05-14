@@ -72,6 +72,7 @@ const PreOrder = () => {
           day: dayOfWeek,
           date: dayOfMonth,
           dateStr: date.toDateString(),
+          dateISO: date.toISOString().split("T")[0],
         });
       }
 
@@ -153,7 +154,7 @@ const PreOrder = () => {
           onPress={() =>
             router.push({
               pathname: "/(authenticated)/cart/pre-order/payment",
-              params: { date: selectedDay.dateStr },
+              params: { date: selectedDay.dateISO },
             })
           }
           className={`bg-yellow py-3 rounded-lg ${

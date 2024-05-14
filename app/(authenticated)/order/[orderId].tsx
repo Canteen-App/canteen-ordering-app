@@ -49,7 +49,6 @@ const OrderDetails = () => {
   const getData = async () => {
     if (orderId) {
       const orderDetails = await getOrderDetails(orderId);
-      console.log(orderDetails)
       setOrder(orderDetails);
       setGetCode(false);
     }
