@@ -1,11 +1,12 @@
-import { View, Text } from "react-native";
-import React, { useEffect, useState } from "react";
+import TabBar from "@/components/TabBar";
+import { auth } from "@/firebase";
+import { CartProvider } from "@/services/cart";
 import { Redirect, Stack } from "expo-router";
 import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "@/firebase";
-import TabBar from "@/components/TabBar";
-import { CartProvider } from "@/services/cart";
-import { getCustomerAccount } from "@/services/customer";
+import { useEffect, useState } from "react";
+import { Text, View } from "react-native";
+
+import "../../global.css";
 
 const Layout = () => {
   const [user, setUser] = useState<any>();

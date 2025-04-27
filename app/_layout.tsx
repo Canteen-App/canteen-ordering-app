@@ -1,8 +1,9 @@
-import { View, Text } from "react-native";
-import React, { useEffect, useState } from "react";
-import { Redirect, Slot, Stack, router } from "expo-router";
 import { auth } from "@/firebase";
+import { Redirect, Slot, Stack } from "expo-router";
 import { onAuthStateChanged } from "firebase/auth";
+import { useEffect, useState } from "react";
+import { Text, View } from "react-native";
+import "../global.css";
 
 const Root = () => {
   const [user, setUser] = useState<any>();
