@@ -1,10 +1,13 @@
 import { View, Text } from "react-native";
 import React, { useEffect, useState } from "react";
-import { Redirect, Slot, Stack, router } from "expo-router";
-import { auth } from "@/firebase";
+import { Redirect, Stack } from "expo-router";
 import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "@/firebase";
+import TabBar from "@/components/TabBar";
+import { CartProvider } from "@/services/cart";
+import { getCustomerAccount } from "@/services/customer";
 
-const Root = () => {
+const Layout = () => {
   const [user, setUser] = useState<any>();
   const [loading, setLoading] = useState(true);
 
@@ -14,6 +17,7 @@ const Root = () => {
         setUser(user);
         setLoading(false);
       } else {
+        console.log("Logged Out");
         setUser(null);
         setLoading(false);
       }
@@ -32,18 +36,19 @@ const Root = () => {
 
   if (!loading && user) {
     return (
-      <>
-        <Slot />
-        <Redirect href="/(authenticated)" />
-      </>
+      <CartProvider>
+        <Stack
+          screenOptions={{
+            statusBarColor: "#FFE9B1",
+            headerShown: false,
+          }}
+        />
+        <TabBar />
+      </CartProvider>
     );
   }
 
-  return (
-    <Stack
-      screenOptions={{ headerTitle: "Canteen", headerTitleAlign: "center" }}
-    />
-  );
+  return <Redirect href="/" />;
 };
 
-export default Root;
+export default Layout;
