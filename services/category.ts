@@ -1,8 +1,13 @@
 import fetchAPI from "..//axios";
 
 export const getDailyMeals = async () => {
-  const response = await fetchAPI.get("/category/DAILY_MEAL");
-  return response.data;
+  try {
+    const response = await fetchAPI.get("/category/DAILY_MEAL");
+    console.log(response)
+    return response.data;
+  } catch (error) {
+    console.log(error)
+  }
 };
 
 export const getCategories = async () => {

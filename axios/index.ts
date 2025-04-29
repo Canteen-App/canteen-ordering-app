@@ -1,12 +1,20 @@
 import axios from "axios";
+import { auth } from "@/firebase";
 
 const fetchAPI = axios.create({
   baseURL: process.env.EXPO_PUBLIC_API_URL,
 });
 
-// Request interceptor
+// Request interceptor to add Firebase Auth Bearer Token
 fetchAPI.interceptors.request.use(
-  (config: any) => {
+  async (config: any) => {
+    const user = auth.currentUser;
+
+    if (user) {
+      const token = await user.getIdToken();
+      config.headers["Authorization"] = `Bearer ${token}`;
+    }
+
     config.headers["Content-Type"] = "application/json";
     return config;
   },
@@ -17,12 +25,8 @@ fetchAPI.interceptors.request.use(
 
 // Response interceptor
 fetchAPI.interceptors.response.use(
-  (response: any) => {
-    return response;
-  },
-  (error: any) => {
-    return Promise.reject(error);
-  }
+  (response: any) => response,
+  (error: any) => Promise.reject(error)
 );
 
 export default fetchAPI;
